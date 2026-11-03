@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>קישורים לפרויקטים</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;700&display=swap">
+<style>
+  /* Layout: soft blue and green page, white project cards in two columns (one on phones).
+     Palette and type follow the מתגייסים site, which has a single light look. */
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --navy: #122736;
+    --ink: #171c23;
+    --muted: #55606b;
+    --line: rgba(18, 39, 54, 0.16);
+    --blue: #008ff0;
+    --blue-text: #0b6fb8;
+    --blue-tint: rgba(0, 143, 240, 0.12);
+    --green: #69c600;
+    --green-text: #3f7a00;
+    --green-tint: rgba(105, 198, 0, 0.14);
+    --cta: linear-gradient(-11.75deg, #245377 6%, #1383d0 60%, #0a7fd6 100%);
+    --shadow: 0 8px 32px rgba(18, 39, 54, 0.12);
+    --shadow-hover: 0 12px 36px rgba(18, 39, 54, 0.18);
+    --font: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(44vmax 34vmax at 82% 2%, rgba(0, 143, 240, 0.17), transparent 70%),
+      radial-gradient(38vmax 30vmax at 10% 34%, rgba(105, 198, 0, 0.11), transparent 70%),
+      radial-gradient(44vmax 34vmax at 70% 96%, rgba(0, 143, 240, 0.11), transparent 70%);
+  }
+
+  .page {
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-block: 48px 64px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .index {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .project {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--card);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .project:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .info {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 24px 0;
+  }
+  .area {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 1px 10px;
+    border-radius: 999px;
+    background: var(--blue-tint);
+    color: var(--blue-text);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  h2 .dot { color: var(--green); }
+  .note { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 8px; padding: 20px 24px 24px; }
+  .links a {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding-inline: 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--navy);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, filter 0.15s ease;
+  }
+  .links a.mockup, .links a[href*="figma.com"], .links a[href*="github.com"] { white-space: nowrap; }
+  .links a.mockup::before, .links a[href*="figma.com"]::before, .links a[href*="github.com"]::before {
+    content: "";
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+  }
+  .links a.mockup {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M3 9h18M7 6.5h.01M10 6.5h.01'/%3E%3C/svg%3E");
+  }
+  .links a[href*="figma.com"] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M8.33 2H12v6.67H8.33a3.33 3.33 0 0 1 0-6.67zM12 2h3.67a3.33 3.33 0 0 1 0 6.67H12zM8.33 8.67H12v6.66H8.33a3.33 3.33 0 0 1 0-6.66zM8.67 15.33H12v3.34a3.33 3.33 0 1 1-3.33-3.34z'/%3E%3Ccircle cx='15.33' cy='12' r='3.33'/%3E%3C/svg%3E");
+  }
+  .links a[href*="github.com"] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5M14 5l-4 14'/%3E%3C/svg%3E");
+  }
+  .links a:hover { border-color: var(--blue); color: var(--blue-text); }
+  .links a[href*="figma.com"] { background: #f1e9ff; border-color: transparent; color: #5b21b6; }
+  .links a[href*="figma.com"]:hover { border-color: #5b21b6; color: #5b21b6; }
+  .links a[href*="github.com"] { background: #fff0e3; border-color: transparent; color: #9a3f06; }
+  .links a[href*="github.com"]:hover { border-color: #9a3f06; color: #9a3f06; }
+  .links a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .links a.mockup { background: var(--cta); border-color: transparent; color: #ffffff; font-weight: 700; }
+  .links a.mockup:hover { filter: brightness(1.1); color: #ffffff; }
+  .links a.env { background: var(--green-tint); border-color: transparent; color: var(--green-text); }
+  .links a.env:hover { border-color: var(--green-text); color: var(--green-text); }
+
+  @media (max-width: 720px) {
+    .page { padding-block: 24px 40px; }
+    .index { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .info { padding: 20px 20px 0; }
+    .links { padding: 16px 20px 20px; }
+    h2 { font-size: 22px; }
+  }
+  @media (max-width: 360px) {
+    .info { padding: 16px 16px 0; }
+    .links { gap: 6px; padding: 14px 16px 16px; }
+    .links a { gap: 6px; padding-inline: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project, .links a { transition: none; }
+    .project:hover { transform: none; }
+  }
+</style>
+
+</head>
+<body>
+<main class="page" dir="rtl" lang="he">
+  <ul class="index">
+    <li class="project">
+      <div class="info">
+        <h2>אתר מתגייסים<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a class="mockup" href="https://noambar2.github.io/MitgMockup/" target="_blank" rel="noopener">מוקאפ</a>
+        <a href="https://www.figma.com/design/vipNN5WWANGtIqvF11ijMi/%D7%90%D7%AA%D7%A8-%D7%9E%D7%AA%D7%92%D7%99%D7%99%D7%A1%D7%99%D7%9D-%D7%94%D7%97%D7%93%D7%A9?node-id=0-1&amp;t=RIoPJOxmp8OQsWt5-1" target="_blank" rel="noopener">פיגמה</a>
+        <a href="https://github.com/noambar2/MitgMockup" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>שביט<span class="dot">.</span></h2>
+        <p class="note">תנופה / דף בית מלש״ביה</p>
+      </div>
+      <div class="links">
+        <a class="mockup" href="https://noambar2.github.io/shavit-dashboard/" target="_blank" rel="noopener">מוקאפ</a>
+        <a href="https://www.figma.com/design/sesEpeQbogqsLcQsBhzTG5/%D7%A9%D7%91%D7%99%D7%98?node-id=92-11532&amp;t=mDwFC7elGEjTm8PW-1" target="_blank" rel="noopener">פיגמה</a>
+        <a href="https://github.com/noambar2/shavit-dashboard" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <span class="area">מלש״ביה</span>
+        <h2>פרטי מלש״ב<span class="dot">.</span></h2>
+        <p class="note">כולל סיכום חכם ועוזר חכם</p>
+      </div>
+      <div class="links">
+        <a class="mockup" href="https://noambar2.github.io/ai-malshab/#/malshab" target="_blank" rel="noopener">מוקאפ</a>
+        <a href="https://www.figma.com/design/fub6Qx5498BVhspyx26p0x/%D7%9E%D7%9C%D7%A9%D7%B4%D7%91%D7%99%D7%94?node-id=7008-236542" target="_blank" rel="noopener">פיגמה</a>
+        <a href="https://github.com/noambar2/ai-malshab" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <span class="area">מלש״ביה</span>
+        <h2>משתמטים<span class="dot">.</span></h2>
+        <p class="note">כולל הצעה חכמה בתהליך הכרזה</p>
+      </div>
+      <div class="links">
+        <a class="mockup" href="https://noambar2.github.io/ai-malshab/#/dodgers" target="_blank" rel="noopener">מוקאפ</a>
+        <a href="https://www.figma.com/design/fub6Qx5498BVhspyx26p0x/%D7%9E%D7%9C%D7%A9%D7%B4%D7%91%D7%99%D7%94?node-id=7164-17270" target="_blank" rel="noopener">פיגמה</a>
+        <a href="https://github.com/noambar2/ai-malshab" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <span class="area">מלש״ביה</span>
+        <h2>דירקטיבות<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a class="mockup" href="https://noambar2.github.io/ai-malshab/#/directives" target="_blank" rel="noopener">מוקאפ</a>
+        <a href="https://www.figma.com/design/fub6Qx5498BVhspyx26p0x/%D7%9E%D7%9C%D7%A9%D7%B4%D7%91%D7%99%D7%94?node-id=8132-10911" target="_blank" rel="noopener">פיגמה</a>
+        <a href="https://github.com/noambar2/ai-malshab" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>קהילות, לשכה דיגיטלית וראיון לכל<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a href="https://www.figma.com/design/ZymO7V3gaIfw1bAmskFR6l/Lishka?node-id=3727-60354&amp;t=nnSXvTnuXunTW9UGb-" target="_blank" rel="noopener">פיגמה</a>
+        <a class="env" href="https://communities.malshab.idf.il" target="_blank" rel="noopener">קהילות prod</a>
+        <a class="env" href="https://communities.preprod.malshab.idf.il/login" target="_blank" rel="noopener">קהילות preprod</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>AI ואפי<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a href="https://github.com/WafiKhanjer/RAG-Malshabia" target="_blank" rel="noopener">גיט</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>חוקות<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a href="https://www.figma.com/design/rzxaGQIrp5YJ2IadwVDhdz/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9E%D7%A2%D7%A8%D7%9B%D7%AA-%D7%97%D7%95%D7%A7%D7%95%D7%AA?node-id=0-1&amp;t=w0WAufwJnsfviMo6-1" target="_blank" rel="noopener">פיגמה</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>דפ״ר בשחור<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a href="https://www.figma.com/design/xbD1Z44MHS3uzMatYfEVpZ/%D7%93%D7%A4%D7%B4%D7%A8-%D7%91%D7%A9%D7%97%D7%95%D7%A8?node-id=0-1&amp;t=wC8rUBUFET3avr88-1" target="_blank" rel="noopener">פיגמה</a>
+      </div>
+    </li>
+
+    <li class="project">
+      <div class="info">
+        <h2>תחנות<span class="dot">.</span></h2>
+      </div>
+      <div class="links">
+        <a href="https://www.figma.com/design/mEkJZ9NzDjZFpSaM5kTTip/%D7%AA%D7%97%D7%A0%D7%95%D7%AA?node-id=930-3623&amp;t=4LIXoDXe4bIEk181-1" target="_blank" rel="noopener">פיגמה</a>
+      </div>
+    </li>
+  </ul>
+</main>
+</body>
+</html>
