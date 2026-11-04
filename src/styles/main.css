@@ -48,6 +48,15 @@ body::after {
     radial-gradient(44vmax 34vmax at 70% 96%, var(--blob-3), transparent 70%);
 }
 
+/* Phone browsers paint their bars in the plain page color and cut this layer off at
+   the bar's edge, so it fades out towards the top and bottom to meet them smoothly. */
+@media (pointer: coarse) {
+  body::after {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 140px, #000 calc(100% - 140px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 140px, #000 calc(100% - 140px), transparent);
+  }
+}
+
 /* Shared by the private area: the login screen, task forms and dialogs. */
 .dot { color: var(--dot); }
 
