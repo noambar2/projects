@@ -47,7 +47,7 @@ body::after {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field > span { color: var(--navy); font-size: 15px; font-weight: 500; }
-.field input {
+.field input, .field textarea, .field select {
   width: 100%;
   min-height: 44px;
   padding-inline: 12px;
@@ -57,13 +57,19 @@ body::after {
   color: var(--ink);
   font: inherit; /* 16px also stops iOS from zooming in on focus */
 }
-.field input:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; border-color: transparent; }
+.field textarea { padding-block: 10px; resize: vertical; }
+.field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+  border-color: transparent;
+}
 .field small { color: var(--muted); font-size: 13px; }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   min-height: 44px;
   padding-inline: 16px;
   border: 1px solid rgba(18, 39, 54, 0.24);
@@ -79,8 +85,29 @@ body::after {
 .btn:hover { border-color: var(--navy); }
 .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .btn:disabled { opacity: 0.6; cursor: default; }
+.btn.icon-btn { width: 44px; padding: 0; }
 .btn.primary { border-color: transparent; background: var(--cta); color: #ffffff; font-weight: 700; }
 .btn.primary:hover:not(:disabled) { filter: brightness(1.1); }
 
 .form-error { margin: 0; color: #b42318; font-size: 15px; }
 .form-success { margin: 0; color: var(--green-text); font-size: 15px; font-weight: 500; }
+.field input[type="checkbox"] { width: auto; min-height: 0; }
+
+/* One calm color per task status, used for dots, counts and progress. */
+.status-todo { --status: #7b8794; --status-tint: rgba(123, 135, 148, 0.14); --status-text: #55606b; }
+.status-backlog { --status: #7b8794; --status-tint: rgba(123, 135, 148, 0.14); --status-text: #55606b; }
+.status-in_progress { --status: var(--blue); --status-tint: var(--blue-tint); --status-text: var(--blue-text); }
+.status-review { --status: #e0a100; --status-tint: rgba(224, 161, 0, 0.16); --status-text: #8a6200; }
+.status-done { --status: var(--green); --status-tint: var(--green-tint); --status-text: var(--green-text); }
+
+.status-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--status); }
+.status-count {
+  min-width: 22px;
+  padding-inline: 6px;
+  border-radius: 6px;
+  background: var(--status-tint);
+  color: var(--status-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}

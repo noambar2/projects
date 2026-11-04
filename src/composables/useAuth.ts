@@ -1,4 +1,5 @@
-import { shallowRef } from 'vue'
+import { shallowRef, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { isAuthRetryableFetchError, type AuthError, type Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
@@ -14,6 +15,14 @@ supabase.auth.onAuthStateChange((_event, nextSession) => {
 })
 
 export const MIN_PASSWORD_LENGTH = 8
+
+/** For private pages. Covers signing out here, in another tab, or the session expiring. */
+export function useRedirectWhenSignedOut() {
+  const router = useRouter()
+  watch(session, (value) => {
+    if (!value) router.replace('/login')
+  })
+}
 
 export async function signIn(email: string, password: string): Promise<string | null> {
   const { error } = await supabase.auth.signInWithPassword({ email, password })

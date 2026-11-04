@@ -14,6 +14,7 @@ export const router = createRouter({
     { path: '/', component: HomeView },
     { path: '/login', component: () => import('@/views/LoginView.vue'), meta: { guestOnly: true } },
     { path: '/tasks', component: () => import('@/views/TasksView.vue'), meta: { requiresAuth: true } },
+    { path: '/settings', component: () => import('@/views/SettingsView.vue'), meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
