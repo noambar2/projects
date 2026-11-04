@@ -63,7 +63,10 @@ const overdue = computed(() => {
       הושלם<template v-if="task.completed_at"> ב-{{ fullDate.format(new Date(task.completed_at)) }}</template>
     </div>
     <div v-if="task.due_date" class="dates">
-      <span class="due" :class="{ overdue }">יעד {{ dueLabel }}</span>
+      <span class="due" :class="{ overdue }">
+        <AppIcon name="target" :size="14" />
+        תאריך יעד {{ dueLabel }}
+      </span>
     </div>
 
     <details v-if="task.subtasks.length" class="subtasks">
@@ -128,10 +131,10 @@ const overdue = computed(() => {
 
 /* Done tasks recede: see-through and flat. Text stays readable and buttons stay solid. */
 .card.done { background: rgba(255, 255, 255, 0.5); box-shadow: none; }
-.card.done h3 { color: var(--muted); font-weight: 500; }
+.card.done h3 { color: var(--muted); font-weight: 400; }
 
-.head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
 .tools { display: flex; flex: none; gap: 4px; }
 .tool {
   width: 32px;
@@ -141,15 +144,22 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 700; line-heig
   border-radius: 8px;
   color: var(--muted);
 }
-@media (pointer: coarse) {
-  .tool { width: 44px; min-height: 44px; border-radius: 10px; }
-}
 
 .notes { margin: 0; color: var(--muted); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 
 .dates { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
-.due { padding: 1px 8px; border-radius: 6px; background: rgba(18, 39, 54, 0.07); color: var(--muted); }
+.due {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding-inline: 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: rgba(18, 39, 54, 0.07);
+  color: var(--muted);
+}
 .due.overdue { background: rgba(180, 35, 24, 0.1); color: #b42318; font-weight: 500; }
 .completed { display: flex; align-items: center; gap: 6px; color: var(--green-text); font-size: 13px; font-weight: 500; }
 
@@ -229,30 +239,40 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 700; line-heig
   .mode-list.done h3 { grid-column: 1 / 3; }
   .mode-list.done .notes,
   .mode-list.done .subtasks { grid-column: 1 / -1; }
+}
 
-  .mode-list .order .btn {
-    width: 32px;
-    min-height: 32px;
-    border-color: rgba(18, 39, 54, 0.14);
-    border-radius: 8px;
-    color: var(--muted);
-  }
-  .mode-list .order .btn:disabled { opacity: 0.4; }
-  .mode-list .status-select {
-    flex: none;
-    width: 124px;
-    min-height: 32px;
-    padding-inline: 8px;
-    border-color: rgba(18, 39, 54, 0.14);
-    border-radius: 8px;
-  }
-  .mode-list .status-select select { min-height: 30px; font-size: 13px; }
-  .mode-list .undo {
-    min-height: 32px;
-    padding-inline: 10px;
-    border-color: rgba(18, 39, 54, 0.14);
-    border-radius: 8px;
-    font-size: 13px;
-  }
+/* List controls match the edit and delete buttons. */
+.mode-list .controls { justify-content: flex-start; }
+.mode-list .order .btn {
+  width: 32px;
+  min-height: 32px;
+  border-color: rgba(18, 39, 54, 0.14);
+  border-radius: 8px;
+  color: var(--muted);
+}
+.mode-list .order .btn:disabled { opacity: 0.4; }
+.mode-list .status-select {
+  flex: none;
+  width: 124px;
+  min-height: 32px;
+  padding-inline: 8px;
+  border-color: rgba(18, 39, 54, 0.14);
+  border-radius: 8px;
+}
+.mode-list .status-select select { min-height: 30px; }
+.undo {
+  min-height: 32px;
+  padding-inline: 10px;
+  border-color: rgba(18, 39, 54, 0.14);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* iOS zooms in on selects under 16px, so only mouse users get the smaller text. */
+@media (pointer: fine) {
+  .mode-list .status-select select { font-size: 13px; }
+}
+@media (pointer: coarse) {
+  .mode-list .status-select { width: 140px; }
 }
 </style>

@@ -115,10 +115,10 @@ function dropTask(status: TaskStatus, index: number) {
       </div>
       <div class="account">
         <RouterLink class="btn icon-btn" to="/settings" aria-label="הגדרות" title="הגדרות">
-          <AppIcon name="settings" />
+          <AppIcon name="settings" :size="16" />
         </RouterLink>
         <button class="btn icon-btn" type="button" aria-label="התנתקות" title="התנתקות" @click="signOut">
-          <AppIcon class="logout" name="logout" />
+          <AppIcon class="logout" name="logout" :size="16" />
         </button>
       </div>
     </header>
@@ -242,7 +242,15 @@ function dropTask(status: TaskStatus, index: number) {
 h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-height: 1.25; }
 .email { margin: 2px 0 0; color: var(--muted); font-size: 14px; text-align: right; overflow-wrap: anywhere; }
 .account { display: flex; gap: 8px; }
-.account a { box-sizing: border-box; }
+.account .btn {
+  box-sizing: border-box;
+  width: 32px;
+  min-height: 32px;
+  border-color: rgba(18, 39, 54, 0.14);
+  border-radius: 8px;
+  color: var(--muted);
+}
+.toolbar > .primary { min-height: 32px; padding-inline: 12px; border-radius: 8px; font-size: 14px; }
 .logout { transform: scaleX(-1); } /* Points the way out in a right-to-left layout. */
 
 .toolbar {
