@@ -1,0 +1,40 @@
+/* Palette and type follow the מתגייסים site, which has a single light look. */
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --navy: #122736;
+  --ink: #171c23;
+  --muted: #55606b;
+  --blue: #008ff0;
+  --blue-text: #0b6fb8;
+  --blue-tint: rgba(0, 143, 240, 0.12);
+  --green: #69c600;
+  --green-text: #3f7a00;
+  --green-tint: rgba(105, 198, 0, 0.14);
+  --cta: #0b78d0;
+  --shadow: 0 8px 32px rgba(18, 39, 54, 0.12);
+  --shadow-hover: 0 12px 36px rgba(18, 39, 54, 0.18);
+  --font: "Noto Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(44vmax 34vmax at 82% 2%, rgba(0, 143, 240, 0.17), transparent 70%),
+    radial-gradient(38vmax 30vmax at 10% 34%, rgba(105, 198, 0, 0.11), transparent 70%),
+    radial-gradient(44vmax 34vmax at 70% 96%, rgba(0, 143, 240, 0.11), transparent 70%);
+}
