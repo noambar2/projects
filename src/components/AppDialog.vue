@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import AppIcon from '@/components/AppIcon.vue'
 
-defineProps<{
+const props = defineProps<{
   title: string
   width?: number
 }>()
+
+// The green mark ends every title: a question keeps its own mark instead of adding a dot.
+const isQuestion = computed(() => props.title.endsWith('?'))
+const titleText = computed(() => (isQuestion.value ? props.title.slice(0, -1) : props.title))
 
 const CLOSE_DURATION_MS = 280
 
@@ -55,7 +59,7 @@ defineExpose({ open, close })
     <div class="panel">
       <div class="grabber" aria-hidden="true"></div>
       <header class="head">
-        <h2>{{ title }}<span class="dot">.</span></h2>
+        <h2>{{ titleText }}<span class="dot">{{ isQuestion ? '?' : '.' }}</span></h2>
         <button class="btn close" type="button" aria-label="סגירה" @click="close">
           <AppIcon name="x" />
         </button>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import AppDialog from '@/components/AppDialog.vue'
 import AppIcon from '@/components/AppIcon.vue'
 import BoardColumn from '@/components/BoardColumn.vue'
 import DeleteTaskDialog from '@/components/DeleteTaskDialog.vue'
@@ -41,6 +42,7 @@ const {
 } = useTasks()
 
 const deleteDialog = ref<InstanceType<typeof DeleteTaskDialog>>()
+const signOutDialog = ref<InstanceType<typeof AppDialog>>()
 const taskDialog = ref<InstanceType<typeof TaskDialog>>()
 const email = computed(() => session.value?.user.email ?? '')
 
@@ -120,7 +122,7 @@ function dropTask(status: TaskStatus) {
         <RouterLink class="btn icon-btn" to="/settings" aria-label="הגדרות" title="הגדרות">
           <AppIcon name="settings" :size="16" />
         </RouterLink>
-        <button class="btn icon-btn" type="button" aria-label="התנתקות" title="התנתקות" @click="signOut">
+        <button class="btn icon-btn" type="button" aria-label="התנתקות" title="התנתקות" @click="signOutDialog?.open()">
           <AppIcon class="logout" name="logout" :size="16" />
         </button>
       </div>
@@ -252,6 +254,14 @@ function dropTask(status: TaskStatus) {
 
     <TaskDialog ref="taskDialog" :save="saveTask" />
     <DeleteTaskDialog ref="deleteDialog" :remove="deleteTask" />
+
+    <AppDialog ref="signOutDialog" title="להתנתק?" :width="400">
+      <p class="sign-out-text">כדי לחזור למשימות במכשיר הזה צריך יהיה להתחבר שוב.</p>
+      <template #footer>
+        <button class="btn" type="button" autofocus @click="signOutDialog?.close()">ביטול</button>
+        <button class="btn primary sign-out-confirm" type="button" @click="signOut">התנתקות</button>
+      </template>
+    </AppDialog>
   </main>
 </template>
 
@@ -323,6 +333,9 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   background: var(--cta);
 }
 .count { font-size: 13px; font-weight: 500; }
+
+.sign-out-text { margin: 0; font-size: 15px; }
+.sign-out-confirm { flex: 1; }
 
 .notice { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .notice.form-error { color: var(--danger); }

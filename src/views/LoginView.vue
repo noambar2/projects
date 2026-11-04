@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import AppIcon from '@/components/AppIcon.vue'
 import { requestPasswordReset, signIn } from '@/composables/useAuth'
 
 const route = useRoute()
@@ -45,6 +46,10 @@ async function submit() {
 <template>
   <main class="login">
     <section class="card">
+      <RouterLink class="back" to="/">
+        <AppIcon name="arrow-right" :size="16" />
+        חזרה לעמוד הקישורים
+      </RouterLink>
       <h1>{{ forgot ? 'שכחתי סיסמה' : 'כניסה למשימות' }}<span class="dot">.</span></h1>
 
       <form v-if="forgot" class="form" @submit.prevent="sendReset">
@@ -95,6 +100,20 @@ async function submit() {
   box-shadow: var(--shadow);
 }
 h1 { margin: 0 0 24px; color: var(--navy); font-size: 28px; font-weight: 700; line-height: 1.25; }
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  margin-bottom: 8px;
+  color: var(--blue-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.back:hover { text-decoration: underline; }
+.back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
 
 .hint { margin: 0; color: var(--muted); font-size: 15px; }
 .text-link {

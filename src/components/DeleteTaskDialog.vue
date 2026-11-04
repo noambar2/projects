@@ -34,7 +34,7 @@ defineExpose({ open })
 <template>
   <AppDialog ref="dialog" title="למחוק את המשימה?" :width="440">
     <p class="text">
-      <strong>{{ task?.title }}</strong> תימחק לשני המשתמשים, ואי אפשר יהיה לשחזר אותה.
+      <strong>{{ task?.title }}</strong> תימחק לכולם, ואי אפשר יהיה לשחזר אותה.
     </p>
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>
 

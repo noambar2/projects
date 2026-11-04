@@ -76,6 +76,16 @@ body::after {
   font: inherit; /* 16px also stops iOS from zooming in on focus */
 }
 .field textarea { padding-block: 10px; resize: vertical; }
+/* iOS gives date fields a fixed native width, which overflows narrow containers. */
+.field { min-width: 0; }
+.field input[type="date"] {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.field input[type="date"]::-webkit-date-and-time-value { text-align: right; }
 .field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 1px;
