@@ -6,6 +6,7 @@ import { LIST_STATUSES, STATUS_LABELS, type Task, type TaskStatus } from '@/comp
 const props = defineProps<{
   task: Task
   mode: 'board' | 'list'
+  reorderable?: boolean
   canMoveUp?: boolean
   canMoveDown?: boolean
 }>()
@@ -40,7 +41,7 @@ const overdue = computed(() => {
 <template>
   <article
     class="card"
-    :class="[`status-${task.status}`, `mode-${mode}`, { done: isDone }]"
+    :class="[`status-${task.status}`, `mode-${mode}`, { done: isDone, flush: !reorderable }]"
     :data-task-id="task.id"
     :draggable="mode === 'board'"
   >
@@ -95,7 +96,7 @@ const overdue = computed(() => {
     </button>
 
     <div v-else-if="mode === 'list'" class="controls">
-      <div class="order">
+      <div v-if="reorderable" class="order">
         <button class="btn icon-btn" type="button" :disabled="!canMoveUp" aria-label="העברה למעלה" @click="$emit('move', 'up')">
           <AppIcon name="arrow-up" />
         </button>
@@ -122,15 +123,15 @@ const overdue = computed(() => {
   padding: 16px;
   box-sizing: border-box;
   background: var(--card);
-  border: 1px solid rgba(18, 39, 54, 0.08);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(18, 39, 54, 0.06);
+  border: 1px solid rgba(var(--ink-rgb), 0.08);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.06);
 }
 .card[draggable="true"] { cursor: grab; }
 .card[draggable="true"]:active { cursor: grabbing; }
 
 /* Done tasks recede: see-through and flat. Text stays readable and buttons stay solid. */
-.card.done { background: rgba(255, 255, 255, 0.5); box-shadow: none; }
+.card.done { background: var(--card-faded); box-shadow: none; }
 .card.done h3 { color: var(--muted); font-weight: 400; }
 
 .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -140,7 +141,7 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   width: 32px;
   min-height: 32px;
   padding: 0;
-  border-color: rgba(18, 39, 54, 0.14);
+  border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
   color: var(--muted);
 }
@@ -157,10 +158,10 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   padding-inline: 10px;
   box-sizing: border-box;
   border-radius: 8px;
-  background: rgba(18, 39, 54, 0.07);
+  background: rgba(var(--ink-rgb), 0.07);
   color: var(--muted);
 }
-.due.overdue { background: rgba(180, 35, 24, 0.1); color: #b42318; font-weight: 500; }
+.due.overdue { background: rgba(180, 35, 24, 0.1); color: var(--danger); font-weight: 500; }
 .completed { display: flex; align-items: center; gap: 6px; color: var(--green-text); font-size: 13px; font-weight: 500; }
 
 .subtasks summary { display: block; cursor: pointer; list-style: none; }
@@ -168,7 +169,7 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
 .subtasks summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
 .progress-label { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--navy); font-size: 13px; font-weight: 500; }
 .segments { display: flex; gap: 4px; }
-.segments span { flex: 1; height: 4px; border-radius: 2px; background: rgba(18, 39, 54, 0.12); }
+.segments span { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--ink-rgb), 0.12); }
 .segments .filled { background: var(--status); }
 .subtasks ul { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
 .subtasks label { display: flex; align-items: flex-start; gap: 8px; color: var(--ink); font-size: 14px; cursor: pointer; }
@@ -186,8 +187,8 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   min-height: 44px;
   padding-inline: 12px;
   box-sizing: border-box;
-  border: 1px solid rgba(18, 39, 54, 0.24);
-  border-radius: 10px;
+  border: 1px solid rgba(var(--ink-rgb), 0.24);
+  border-radius: var(--radius);
 }
 .status-select:focus-within { outline: 2px solid var(--blue); outline-offset: 1px; }
 .status-select select {
@@ -235,10 +236,10 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   .mode-list .subtasks { grid-column: 2 / -1; }
   .mode-list .notes { font-size: 13px; }
 
-  /* Done tasks have no arrows, so their content starts at the edge. */
-  .mode-list.done h3 { grid-column: 1 / 3; }
-  .mode-list.done .notes,
-  .mode-list.done .subtasks { grid-column: 1 / -1; }
+  /* Without arrows, the content starts at the edge. */
+  .mode-list.flush h3 { grid-column: 1 / 3; }
+  .mode-list.flush .notes,
+  .mode-list.flush .subtasks { grid-column: 1 / -1; }
 }
 
 /* List controls match the edit and delete buttons. */
@@ -246,7 +247,7 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
 .mode-list .order .btn {
   width: 32px;
   min-height: 32px;
-  border-color: rgba(18, 39, 54, 0.14);
+  border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
   color: var(--muted);
 }
@@ -256,14 +257,14 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   width: 124px;
   min-height: 32px;
   padding-inline: 8px;
-  border-color: rgba(18, 39, 54, 0.14);
+  border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
 }
 .mode-list .status-select select { min-height: 30px; }
 .undo {
   min-height: 32px;
   padding-inline: 10px;
-  border-color: rgba(18, 39, 54, 0.14);
+  border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
   font-size: 13px;
 }

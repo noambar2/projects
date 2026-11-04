@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppIcon from '@/components/AppIcon.vue'
 import ChangePasswordForm from '@/components/ChangePasswordForm.vue'
+import ThemePicker from '@/components/ThemePicker.vue'
 import { session, useRedirectWhenSignedOut } from '@/composables/useAuth'
 
 useRedirectWhenSignedOut()
@@ -18,6 +19,11 @@ const email = computed(() => session.value?.user.email ?? '')
     </RouterLink>
     <h1>הגדרות<span class="dot">.</span></h1>
     <p dir="ltr" class="email">{{ email }}</p>
+
+    <section class="card">
+      <h2>ערכת נושא</h2>
+      <ThemePicker />
+    </section>
 
     <section class="card">
       <h2>החלפת סיסמה</h2>
@@ -49,7 +55,8 @@ const email = computed(() => session.value?.user.email ?? '')
 .back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
 h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-height: 1.25; }
 .email { margin: 2px 0 24px; color: var(--muted); font-size: 14px; text-align: right; overflow-wrap: anywhere; }
-.card { padding: 24px; background: var(--card); border-radius: 10px; box-shadow: var(--shadow); }
+.card + .card { margin-top: 16px; }
+.card { padding: 24px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
 h2 { margin: 0 0 20px; color: var(--navy); font-size: 20px; font-weight: 700; }
 
 @media (max-width: 720px) {

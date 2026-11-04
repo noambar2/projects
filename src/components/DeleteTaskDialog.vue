@@ -52,7 +52,7 @@ defineExpose({ open })
   padding: 24px;
   box-sizing: border-box;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
   box-shadow: var(--shadow-hover);

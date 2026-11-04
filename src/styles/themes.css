@@ -1,0 +1,114 @@
+/* Themes for the private area, set through data-theme on the root element.
+   "light" is the default palette in main.css. Buttons use a darker shade than
+   the מתגייסים brand colors so their white text stays readable. */
+:root[data-theme="dark"] {
+  --bg: #0c1720;
+  --card: #16242f;
+  --card-faded: rgba(22, 36, 47, 0.5);
+  --navy: #eaf1f6;
+  --ink: #dfe7ee;
+  --ink-rgb: 233, 240, 246;
+  --muted: #9fb0bd;
+  --blue: #4db4f5;
+  --blue-text: #6ec4f8;
+  --blue-tint: rgba(77, 180, 245, 0.16);
+  --green-text: #8fd94a;
+  --cta: #4db4f5;
+  --cta-text: #0c1720;
+  --danger: #ff8a7a;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.5);
+  --blob-1: rgba(30, 127, 196, 0.29);
+  --blob-2: rgba(47, 156, 106, 0.19);
+  --blob-3: rgba(30, 127, 196, 0.19);
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .status-todo,
+:root[data-theme="dark"] .status-backlog { --status: #8d9aa6; --status-text: #b4c0ca; }
+:root[data-theme="dark"] .status-review { --status-text: #e6c15c; }
+
+:root[data-theme="purple"] {
+  --bg: #f6f4fb;
+  --blue: #7a5cf0;
+  --blue-text: #6a4ce0;
+  --blue-tint: rgba(122, 92, 240, 0.12);
+  --cta: #6a4ce0;
+  --dot: #d46bd8;
+  --blob-1: rgba(122, 92, 240, 0.17);
+  --blob-2: rgba(212, 107, 216, 0.11);
+  --blob-3: rgba(122, 92, 240, 0.11);
+}
+
+:root[data-theme="teal"] {
+  --bg: #f2f8f8;
+  --blue: #0aa2a2;
+  --blue-text: #087f7f;
+  --blue-tint: rgba(10, 162, 162, 0.12);
+  --cta: #087f7f;
+  --blob-1: rgba(10, 162, 162, 0.17);
+  --blob-3: rgba(10, 162, 162, 0.11);
+}
+
+:root[data-theme="sunset"] {
+  --bg: #fcf6f2;
+  --blue: #e2622c;
+  --blue-text: #b84a1c;
+  --blue-tint: rgba(226, 98, 44, 0.12);
+  --cta: #c2501f;
+  --dot: #f0a92c;
+  --blob-1: rgba(226, 98, 44, 0.17);
+  --blob-2: rgba(240, 169, 44, 0.11);
+  --blob-3: rgba(226, 98, 44, 0.11);
+}
+
+:root[data-theme="rose"] {
+  --bg: #fcf3f7;
+  --blue: #d63b73;
+  --blue-text: #c02f64;
+  --blue-tint: rgba(214, 59, 115, 0.12);
+  --cta: #c02f64;
+  --dot: #8d5cf0;
+  --blob-1: rgba(214, 59, 115, 0.17);
+  --blob-2: rgba(141, 92, 240, 0.11);
+  --blob-3: rgba(214, 59, 115, 0.11);
+}
+
+/* Playful: rounder corners, tinted shadows and a color of its own for each page. */
+:root[data-theme="playful"] {
+  --radius: 18px;
+  --bg: #f6f2ff;
+  --blue: #7c5cf5;
+  --blue-text: #6a49e8;
+  --blue-tint: rgba(124, 92, 245, 0.12);
+  --cta: #6a49e8;
+  --dot: #ffb02e;
+  --shadow: 0 8px 32px rgba(124, 92, 245, 0.2);
+  --shadow-hover: 0 12px 36px rgba(124, 92, 245, 0.28);
+  --blob-1: rgba(124, 92, 245, 0.45);
+  --blob-2: rgba(255, 176, 46, 0.3);
+  --blob-3: rgba(124, 92, 245, 0.3);
+}
+:root[data-theme="playful"][data-page="tasks"] {
+  --bg: #e8fafd;
+  --blue: #00b3c7;
+  --blue-text: #007f8e;
+  --blue-tint: rgba(0, 179, 199, 0.13);
+  --cta: #007f8e;
+  --dot: #69c600;
+  --shadow: 0 8px 32px rgba(0, 179, 199, 0.2);
+  --shadow-hover: 0 12px 36px rgba(0, 179, 199, 0.28);
+  --blob-1: rgba(0, 179, 199, 0.45);
+  --blob-2: rgba(105, 198, 0, 0.3);
+  --blob-3: rgba(0, 179, 199, 0.3);
+}
+:root[data-theme="playful"][data-page="settings"] {
+  --bg: #f5f0ff;
+  --blue: #8b5cf6;
+  --blue-text: #7a4bea;
+  --blue-tint: rgba(139, 92, 246, 0.12);
+  --cta: #7a4bea;
+  --dot: #ff8fc7;
+  --blob-1: rgba(139, 92, 246, 0.45);
+  --blob-2: rgba(255, 143, 199, 0.3);
+  --blob-3: rgba(139, 92, 246, 0.3);
+}

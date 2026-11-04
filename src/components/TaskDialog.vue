@@ -130,7 +130,7 @@ defineExpose({ open })
   padding: 24px;
   box-sizing: border-box;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
   box-shadow: var(--shadow-hover);
@@ -147,8 +147,8 @@ legend { margin-bottom: 6px; padding: 0; color: var(--navy); font-size: 15px; fo
   min-width: 0;
   min-height: 44px;
   padding-inline: 12px;
-  border: 1px solid rgba(18, 39, 54, 0.24);
-  border-radius: 10px;
+  border: 1px solid rgba(var(--ink-rgb), 0.24);
+  border-radius: var(--radius);
   background: var(--card);
   color: var(--ink);
   font: inherit;

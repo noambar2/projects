@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>קישורים לפרויקטים</title>
+    <script>
+      // Set before the first paint so a dark theme doesn't flash light. See src/lib/theme.ts.
+      try {
+        if (/\/(tasks|settings|login)\/?$/.test(location.pathname)) {
+          document.documentElement.dataset.theme = localStorage.getItem('tasks:theme') || 'light'
+        }
+      } catch (e) {}
+    </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;700&display=swap">
   </head>
   <body>

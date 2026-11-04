@@ -17,7 +17,7 @@ import {
   type TaskStatus,
 } from '@/composables/useTasks'
 
-type View = 'board' | 'list' | 'backlog' | 'completed'
+type View = 'board' | 'list' | 'priority' | 'backlog' | 'completed'
 
 const VIEW_STORAGE_KEY = 'tasks:view'
 
@@ -25,6 +25,7 @@ useRedirectWhenSignedOut()
 
 const {
   byStatus,
+  priorityActive,
   olderDone,
   loading,
   loadFailed,
@@ -37,7 +38,6 @@ const {
   saveEdit,
   setStatus,
   moveTask,
-  moveToPosition,
 } = useTasks()
 
 const deleteDialog = ref<InstanceType<typeof DeleteTaskDialog>>()
@@ -59,6 +59,7 @@ const views = computed(() =>
   [
     { id: 'board' as const, label: 'לוח' },
     { id: 'list' as const, label: 'רשימה' },
+    { id: 'priority' as const, label: 'תעדוף' },
     { id: 'backlog' as const, label: 'בקלוג' },
     { id: 'completed' as const, label: 'הושלמו' },
   ].filter((item) => !listOnly.value || item.id !== 'board'),
@@ -67,7 +68,9 @@ const views = computed(() =>
 function readStoredView(): View {
   try {
     const stored = localStorage.getItem(VIEW_STORAGE_KEY)
-    return stored === 'list' || stored === 'backlog' || stored === 'completed' ? stored : 'board'
+    return stored === 'list' || stored === 'priority' || stored === 'backlog' || stored === 'completed'
+      ? stored
+      : 'board'
   } catch {
     return 'board'
   }
@@ -100,8 +103,8 @@ function toggleSubtask(task: Task, subtaskId: string) {
   })
 }
 
-function dropTask(status: TaskStatus, index: number) {
-  if (dragging.value) moveToPosition(dragging.value, status, index)
+function dropTask(status: TaskStatus) {
+  if (dragging.value) setStatus(dragging.value, status)
   dragging.value = null
 }
 </script>
@@ -170,8 +173,42 @@ function dropTask(status: TaskStatus, index: number) {
         @toggle-subtask="toggleSubtask"
         @drag-start="dragging = $event"
         @drag-end="dragging = null"
-        @drop-task="dropTask(status, $event)"
+        @drop-task="dropTask(status)"
       />
+    </div>
+
+    <div v-else-if="view === 'priority'" class="sections">
+      <section
+        v-for="group in [
+          { title: 'פעילות', status: 'in_progress', tasks: priorityActive },
+          { title: 'בקלוג', status: 'backlog', tasks: byStatus.backlog },
+        ]"
+        :key="group.title"
+        :class="`status-${group.status}`"
+      >
+        <h2 class="section-title">
+          <span class="status-dot"></span>
+          {{ group.title }}
+          <span class="status-count">{{ group.tasks.length }}</span>
+        </h2>
+        <p v-if="group.tasks.length === 0" class="empty">אין כאן משימות.</p>
+        <div v-else class="list">
+          <TaskCard
+            v-for="(task, index) in group.tasks"
+            :key="task.id"
+            :task="task"
+            mode="list"
+            reorderable
+            :can-move-up="index > 0"
+            :can-move-down="index < group.tasks.length - 1"
+            @edit="taskDialog?.open(task)"
+            @delete="deleteDialog?.open(task)"
+            @move="moveTask(task, $event, group.tasks)"
+            @status="setStatus(task, $event)"
+            @toggle-subtask="toggleSubtask(task, $event)"
+          />
+        </div>
+      </section>
     </div>
 
     <div v-else-if="view === 'completed'" class="sections">
@@ -200,15 +237,12 @@ function dropTask(status: TaskStatus, index: number) {
         <p v-if="byStatus[status].length === 0" class="empty">אין כאן משימות.</p>
         <div v-else class="list">
           <TaskCard
-            v-for="(task, index) in byStatus[status]"
+            v-for="task in byStatus[status]"
             :key="task.id"
             :task="task"
             mode="list"
-            :can-move-up="index > 0"
-            :can-move-down="index < byStatus[status].length - 1"
             @edit="taskDialog?.open(task)"
             @delete="deleteDialog?.open(task)"
-            @move="moveTask(task, $event)"
             @status="setStatus(task, $event)"
             @toggle-subtask="toggleSubtask(task, $event)"
           />
@@ -246,7 +280,7 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   box-sizing: border-box;
   width: 32px;
   min-height: 32px;
-  border-color: rgba(18, 39, 54, 0.14);
+  border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
   color: var(--muted);
 }
@@ -260,7 +294,7 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(18, 39, 54, 0.12);
+  border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
   padding-bottom: 12px;
 }
 .views { display: flex; gap: 4px; }
@@ -291,7 +325,7 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
 .count { font-size: 13px; font-weight: 500; }
 
 .notice { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
-.notice.form-error { color: #b42318; }
+.notice.form-error { color: var(--danger); }
 .state { margin: 32px 0; color: var(--muted); text-align: center; }
 .state .form-error { margin-bottom: 12px; }
 
@@ -320,6 +354,7 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   .page { padding-block: 24px 40px; }
   h1 { font-size: 28px; }
   .toolbar > .primary { border-radius: 999px; }
+  .view-tab { padding-inline: 8px; font-size: 14px; }
   .view-tab.current::after { bottom: 0; }
 }
 </style>

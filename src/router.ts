@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { applyThemeFor } from '@/lib/theme'
 import HomeView from '@/views/HomeView.vue'
 
 declare module 'vue-router' {
@@ -31,3 +32,5 @@ router.beforeEach(async (to) => {
   }
   if (to.meta.guestOnly && session.value) return { path: '/tasks' }
 })
+
+router.afterEach(applyThemeFor)

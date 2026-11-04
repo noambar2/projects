@@ -60,7 +60,7 @@ async function submit() {
   padding: 32px;
   box-sizing: border-box;
   background: var(--card);
-  border-radius: 10px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 h1 { margin: 0 0 24px; color: var(--navy); font-size: 28px; font-weight: 700; line-height: 1.25; }
