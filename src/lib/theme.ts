@@ -36,7 +36,7 @@ export function storeTheme(id: ThemeId) {
 /** Themes cover the private area only: the public links page keeps its single look. */
 export function applyThemeFor(route: RouteLocationNormalized) {
   const root = document.documentElement
-  if (route.meta.requiresAuth || route.meta.guestOnly) {
+  if (route.meta.requiresAuth || route.meta.guestOnly || route.meta.themed) {
     root.dataset.theme = getStoredTheme()
     root.dataset.page = route.path.slice(1)
   } else {

@@ -6,6 +6,7 @@ declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
     guestOnly?: boolean
+    themed?: boolean
   }
 }
 
@@ -14,6 +15,7 @@ export const router = createRouter({
   routes: [
     { path: '/', component: HomeView },
     { path: '/login', component: () => import('@/views/LoginView.vue'), meta: { guestOnly: true } },
+    { path: '/reset-password', component: () => import('@/views/ResetPasswordView.vue'), meta: { themed: true } },
     { path: '/tasks', component: () => import('@/views/TasksView.vue'), meta: { requiresAuth: true } },
     { path: '/settings', component: () => import('@/views/SettingsView.vue'), meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' },

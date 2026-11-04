@@ -7,7 +7,7 @@
     <script>
       // Set before the first paint so a dark theme doesn't flash light. See src/lib/theme.ts.
       try {
-        if (/\/(tasks|settings|login)\/?$/.test(location.pathname)) {
+        if (/\/(tasks|settings|login|reset-password)\/?$/.test(location.pathname)) {
           document.documentElement.dataset.theme = localStorage.getItem('tasks:theme') || 'light'
         }
       } catch (e) {}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { signIn } from '@/composables/useAuth'
+import { requestPasswordReset, signIn } from '@/composables/useAuth'
 
 const route = useRoute()
 const router = useRouter()
@@ -10,6 +10,23 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 const busy = ref(false)
+const forgot = ref(false)
+const resetSent = ref(false)
+
+function showForgot(value: boolean) {
+  forgot.value = value
+  resetSent.value = false
+  error.value = ''
+}
+
+async function sendReset() {
+  error.value = ''
+  busy.value = true
+  const failure = await requestPasswordReset(email.value.trim())
+  busy.value = false
+  if (failure) error.value = failure
+  else resetSent.value = true
+}
 
 async function submit() {
   error.value = ''
@@ -28,8 +45,21 @@ async function submit() {
 <template>
   <main class="login">
     <section class="card">
-      <h1>כניסה למשימות<span class="dot">.</span></h1>
-      <form class="form" @submit.prevent="submit">
+      <h1>{{ forgot ? 'שכחתי סיסמה' : 'כניסה למשימות' }}<span class="dot">.</span></h1>
+
+      <form v-if="forgot" class="form" @submit.prevent="sendReset">
+        <p class="hint">נשלח למייל קישור לקביעת סיסמה חדשה.</p>
+        <label class="field">
+          <span>אימייל</span>
+          <input v-model="email" type="email" dir="ltr" autocomplete="username" required />
+        </label>
+        <p v-if="error" class="form-error" role="alert">{{ error }}</p>
+        <p v-if="resetSent" class="form-success" role="status">אם הכתובת רשומה אצלנו, הקישור בדרך למייל. כדאי לבדוק גם בספאם.</p>
+        <button class="btn primary" type="submit" :disabled="busy">{{ busy ? 'שולחים…' : 'שליחת קישור' }}</button>
+        <button class="text-link" type="button" @click="showForgot(false)">חזרה לכניסה</button>
+      </form>
+
+      <form v-else class="form" @submit.prevent="submit">
         <label class="field">
           <span>אימייל</span>
           <input v-model="email" type="email" dir="ltr" autocomplete="username" required />
@@ -40,6 +70,7 @@ async function submit() {
         </label>
         <p v-if="error" class="form-error" role="alert">{{ error }}</p>
         <button class="btn primary" type="submit" :disabled="busy">{{ busy ? 'מתחברים…' : 'כניסה' }}</button>
+        <button class="text-link" type="button" @click="showForgot(true)">שכחתי סיסמה</button>
       </form>
     </section>
   </main>
@@ -64,6 +95,22 @@ async function submit() {
   box-shadow: var(--shadow);
 }
 h1 { margin: 0 0 24px; color: var(--navy); font-size: 28px; font-weight: 700; line-height: 1.25; }
+
+.hint { margin: 0; color: var(--muted); font-size: 15px; }
+.text-link {
+  align-self: center;
+  min-height: 32px;
+  padding-inline: 8px;
+  border: none;
+  background: transparent;
+  color: var(--blue-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.text-link:hover { text-decoration: underline; }
+.text-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; border-radius: 4px; }
 
 @media (max-width: 360px) {
   .card { padding: 20px; }
