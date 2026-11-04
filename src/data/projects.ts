@@ -96,3 +96,10 @@ export const projects: Project[] = [
     links: [{ type: 'figma', url: 'https://www.figma.com/design/mEkJZ9NzDjZFpSaM5kTTip/%D7%AA%D7%97%D7%A0%D7%95%D7%AA?node-id=930-3623&t=4LIXoDXe4bIEk181-1' }],
   },
 ]
+
+/** Every project with a mockup, for linking a task to one. */
+export const mockups = projects.flatMap((project) =>
+  project.links
+    .filter((link) => link.type === 'mockup')
+    .map((link) => ({ title: project.title, url: link.url, device: project.mockupDevice })),
+)

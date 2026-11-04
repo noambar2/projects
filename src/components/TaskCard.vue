@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import AppIcon from '@/components/AppIcon.vue'
+import { mockups } from '@/data/projects'
 import { LIST_STATUSES, STATUS_LABELS, type Task, type TaskStatus } from '@/composables/useTasks'
 
 const props = defineProps<{
@@ -20,6 +21,10 @@ defineEmits<{
 }>()
 
 const isDone = computed(() => props.task.status === 'done')
+const mockupFitsPhones = computed(
+  () => mockups.find((mockup) => mockup.url === props.task.mockup_url)?.device === 'mobile',
+)
+const showControls = computed(() => isDone.value || props.mode === 'list' || !!props.task.mockup_url)
 const doneCount = computed(() => props.task.subtasks.filter((subtask) => subtask.done).length)
 
 const dayMonth = new Intl.DateTimeFormat('he-IL', { day: 'numeric', month: 'numeric' })
@@ -90,27 +95,43 @@ const overdue = computed(() => {
       </ul>
     </details>
 
-    <button v-if="isDone" class="btn undo" type="button" @click="$emit('status', 'todo')">
-      <AppIcon name="undo" :size="16" />
-      החזרה ללא התחיל
-    </button>
+    <div v-if="showControls" class="controls">
+      <button v-if="isDone" class="btn undo" type="button" @click="$emit('status', 'todo')">
+        <AppIcon name="undo" :size="16" />
+        החזרה ללא התחיל
+      </button>
 
-    <div v-else-if="mode === 'list'" class="controls">
-      <div v-if="reorderable" class="order">
-        <button class="btn icon-btn" type="button" :disabled="!canMoveUp" aria-label="העברה למעלה" @click="$emit('move', 'up')">
-          <AppIcon name="arrow-up" />
-        </button>
-        <button class="btn icon-btn" type="button" :disabled="!canMoveDown" aria-label="העברה למטה" @click="$emit('move', 'down')">
-          <AppIcon name="arrow-down" />
-        </button>
-      </div>
-      <label class="status-select">
-        <span class="status-dot"></span>
-        <span class="sr-only">סטטוס</span>
-        <select :value="task.status" @change="$emit('status', ($event.target as HTMLSelectElement).value as TaskStatus)">
-          <option v-for="status in LIST_STATUSES" :key="status" :value="status">{{ STATUS_LABELS[status] }}</option>
-        </select>
-      </label>
+      <template v-else-if="mode === 'list'">
+        <div v-if="reorderable" class="order">
+          <button class="btn icon-btn" type="button" :disabled="!canMoveUp" aria-label="העברה למעלה" @click="$emit('move', 'up')">
+            <AppIcon name="arrow-up" />
+          </button>
+          <button class="btn icon-btn" type="button" :disabled="!canMoveDown" aria-label="העברה למטה" @click="$emit('move', 'down')">
+            <AppIcon name="arrow-down" />
+          </button>
+        </div>
+        <label class="status-select">
+          <span class="status-dot"></span>
+          <span class="sr-only">סטטוס</span>
+          <select :value="task.status" @change="$emit('status', ($event.target as HTMLSelectElement).value as TaskStatus)">
+            <option v-for="status in LIST_STATUSES" :key="status" :value="status">{{ STATUS_LABELS[status] }}</option>
+          </select>
+        </label>
+      </template>
+
+      <a
+        v-if="task.mockup_url"
+        class="btn mockup-link"
+        :class="{ 'desktop-only': !mockupFitsPhones }"
+        :href="task.mockup_url"
+        target="_blank"
+        rel="noopener"
+        draggable="false"
+        aria-label="מעבר למוקאפ"
+      >
+        <AppIcon name="mockup" :size="16" />
+        <span class="mockup-label">מעבר למוקאפ</span>
+      </a>
     </div>
   </article>
 </template>
@@ -163,6 +184,21 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
 }
 .due.overdue { background: rgba(180, 35, 24, 0.1); color: var(--danger); font-weight: 500; }
 .completed { display: flex; align-items: center; gap: 6px; color: var(--green-text); font-size: 13px; font-weight: 500; }
+
+.mockup-link {
+  flex: none;
+  box-sizing: border-box;
+  min-height: 32px;
+  padding-inline: 10px;
+  border-color: transparent;
+  border-radius: 8px;
+  background: var(--blue-tint);
+  color: var(--blue-text);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mockup-link:hover { border-color: var(--blue); }
 
 .subtasks summary { display: block; cursor: pointer; list-style: none; }
 .subtasks summary::-webkit-details-marker { display: none; }
@@ -218,7 +254,7 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
 @media (min-width: 901px) and (pointer: fine) {
   .mode-list {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) repeat(4, auto);
+    grid-template-columns: auto minmax(0, 1fr) repeat(5, auto);
     align-items: center;
     gap: 6px 8px;
     padding: 8px 12px;
@@ -229,12 +265,14 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   .mode-list h3 { grid-column: 2; grid-row: 1; font-size: 15px; }
   .mode-list .completed { grid-column: 3; grid-row: 1; white-space: nowrap; }
   .mode-list .dates { grid-column: 4; grid-row: 1; white-space: nowrap; }
+  .mode-list .mockup-link { grid-column: 5; grid-row: 1; }
   .mode-list .status-select,
-  .mode-list .undo { grid-column: 5; grid-row: 1; }
-  .mode-list .tools { grid-column: 6; grid-row: 1; }
+  .mode-list .undo { grid-column: 6; grid-row: 1; }
+  .mode-list .tools { grid-column: 7; grid-row: 1; }
   .mode-list .notes,
   .mode-list .subtasks { grid-column: 2 / -1; }
   .mode-list .notes { font-size: 13px; }
+  .mode-list .status-select { width: 124px; }
 
   /* Without arrows, the content starts at the edge. */
   .mode-list.flush h3 { grid-column: 1 / 3; }
@@ -253,8 +291,8 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
 }
 .mode-list .order .btn:disabled { opacity: 0.4; }
 .mode-list .status-select {
-  flex: none;
-  width: 124px;
+  flex: 0 1 124px;
+  min-width: 0;
   min-height: 32px;
   padding-inline: 8px;
   border-color: rgba(var(--ink-rgb), 0.14);
@@ -274,6 +312,17 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   .mode-list .status-select select { font-size: 13px; }
 }
 @media (pointer: coarse) {
-  .mode-list .status-select { width: 140px; }
+  .mode-list .status-select { flex-basis: 140px; }
+}
+
+/* Most mockups are built for desktop, so phones and tablets don't offer them. */
+@media (max-width: 900px), (pointer: coarse) {
+  .mockup-link.desktop-only { display: none; }
+}
+
+/* Next to the arrows on a phone there is only room for the icon. */
+@media (max-width: 480px) {
+  .mode-list:not(.flush) .mockup-link { width: 32px; padding: 0; }
+  .mode-list:not(.flush) .mockup-label { display: none; }
 }
 </style>

@@ -35,13 +35,14 @@ export interface Task {
   sort_order: number
   due_date: string | null
   subtasks: Subtask[]
+  mockup_url: string | null
   created_by: string | null
   created_at: string
   updated_at: string
   completed_at: string | null
 }
 
-export type EditableTaskFields = Pick<Task, 'title' | 'notes' | 'status' | 'due_date' | 'subtasks'>
+export type EditableTaskFields = Pick<Task, 'title' | 'notes' | 'status' | 'due_date' | 'subtasks' | 'mockup_url'>
 
 export function useTasks() {
   const tasks = ref<Task[]>([])

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import AppDialog from '@/components/AppDialog.vue'
 import AppIcon from '@/components/AppIcon.vue'
+import { mockups } from '@/data/projects'
 import {
   LIST_STATUSES,
   STATUS_LABELS,
@@ -23,6 +24,7 @@ const notes = ref('')
 const status = ref<TaskStatus>('todo')
 const dueDate = ref('')
 const subtasks = ref<Subtask[]>([])
+const mockupUrl = ref('')
 const error = ref('')
 const busy = ref(false)
 
@@ -35,6 +37,7 @@ function open(task: Task | null, defaultStatus: TaskStatus = 'todo') {
   notes.value = task?.notes ?? ''
   status.value = task?.status ?? defaultStatus
   dueDate.value = task?.due_date ?? ''
+  mockupUrl.value = task?.mockup_url ?? ''
   subtasks.value = (task?.subtasks ?? []).map((subtask) => ({ ...subtask }))
   error.value = ''
   dialog.value?.open()
@@ -64,6 +67,7 @@ async function submit() {
       notes: notes.value.trim() || null,
       status: status.value,
       due_date: dueDate.value || null,
+      mockup_url: mockupUrl.value || null,
       subtasks: subtasks.value
         .map((subtask) => ({ ...subtask, title: subtask.title.trim() }))
         .filter((subtask) => subtask.title),
@@ -101,6 +105,14 @@ defineExpose({ open })
           <input v-model="dueDate" type="date" />
         </label>
       </div>
+
+      <label class="field">
+        <span>קישור למוקאפ (לא חובה)</span>
+        <select v-model="mockupUrl">
+          <option value="">ללא</option>
+          <option v-for="mockup in mockups" :key="mockup.url" :value="mockup.url">{{ mockup.title }}</option>
+        </select>
+      </label>
 
       <fieldset class="subtasks">
         <legend>תתי-משימות</legend>
