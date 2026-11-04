@@ -9,7 +9,7 @@ import TaskDialog from '@/components/TaskDialog.vue'
 import { session, signOut, useRedirectWhenSignedOut } from '@/composables/useAuth'
 import {
   BOARD_STATUSES,
-  LIST_STATUSES,
+  LIST_SECTIONS,
   STATUS_LABELS,
   useTasks,
   type EditableTaskFields,
@@ -191,7 +191,7 @@ function dropTask(status: TaskStatus, index: number) {
     </div>
 
     <div v-else class="sections">
-      <section v-for="status in view === 'backlog' ? (['backlog'] as const) : LIST_STATUSES" :key="status" :class="`status-${status}`">
+      <section v-for="status in view === 'backlog' ? (['backlog'] as const) : LIST_SECTIONS" :key="status" :class="`status-${status}`">
         <h2 v-if="view === 'list'" class="section-title">
           <span class="status-dot"></span>
           {{ STATUS_LABELS[status] }}

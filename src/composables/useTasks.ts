@@ -14,6 +14,7 @@ export const STATUS_LABELS: Record<TaskStatus, string> = {
 
 export const BOARD_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'review', 'done']
 export const LIST_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'review', 'backlog', 'done']
+export const LIST_SECTIONS: TaskStatus[] = ['in_progress', 'todo', 'review', 'backlog', 'done']
 
 const RECENT_DONE_MS = 7 * 24 * 60 * 60 * 1000
 
