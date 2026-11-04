@@ -20,11 +20,18 @@ supabase.auth.onAuthStateChange((event, nextSession) => {
 
 export const MIN_PASSWORD_LENGTH = 8
 
-/** For private pages. Covers signing out here, in another tab, or the session expiring. */
+let signingOutHere = false
+
+/**
+ * For private pages. Choosing to sign out leads to the links page. A session that ended
+ * any other way, such as expiring, leads to login so the user can continue.
+ */
 export function useRedirectWhenSignedOut() {
   const router = useRouter()
   watch(session, (value) => {
-    if (!value) router.replace('/login')
+    if (value) return
+    router.replace(signingOutHere ? '/' : '/login')
+    signingOutHere = false
   })
 }
 
@@ -36,6 +43,7 @@ export async function signIn(email: string, password: string): Promise<string | 
 
 /** Signs out this device only, so the other devices stay signed in. */
 export async function signOut(): Promise<void> {
+  signingOutHere = true
   await supabase.auth.signOut({ scope: 'local' })
 }
 
