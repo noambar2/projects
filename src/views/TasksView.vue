@@ -144,9 +144,9 @@ function dropTask(status: TaskStatus) {
           <span v-if="item.id === 'completed'" class="count">{{ olderDone.length }}</span>
         </button>
       </div>
-      <button class="btn primary" type="button" @click="openNewTask()">
+      <button class="btn primary" type="button" aria-label="משימה חדשה" @click="openNewTask()">
         <AppIcon name="plus" :size="16" />
-        משימה חדשה
+        <span class="new-task-label">משימה חדשה</span>
       </button>
     </div>
 
@@ -366,7 +366,12 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
 @media (max-width: 720px) {
   .page { padding-block: 24px 40px; }
   h1 { font-size: 28px; }
-  .toolbar > .primary { border-radius: 999px; }
+  .toolbar { flex-wrap: nowrap; padding-bottom: 0; }
+  /* Reaches over the toolbar's border, so the selected tab's line sits right on it. */
+  .views { flex: 1; min-width: 0; margin-bottom: -1px; overflow-x: auto; scrollbar-width: none; }
+  .views::-webkit-scrollbar { display: none; }
+  .toolbar > .primary { flex: none; width: 32px; padding: 0; border-radius: 50%; }
+  .new-task-label { display: none; }
   .view-tab { padding-inline: 8px; font-size: 14px; }
   .view-tab.current::after { bottom: 0; }
 }
