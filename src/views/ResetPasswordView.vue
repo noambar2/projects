@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import NewPasswordInput from '@/components/NewPasswordInput.vue'
 import { authReady, inPasswordRecovery, MIN_PASSWORD_LENGTH, setNewPassword } from '@/composables/useAuth'
 
 const router = useRouter()
@@ -44,12 +45,12 @@ async function submit() {
       <form v-if="inPasswordRecovery" class="form" @submit.prevent="submit">
         <label class="field">
           <span>סיסמה חדשה</span>
-          <input v-model="next" type="password" dir="ltr" autocomplete="new-password" required />
+          <NewPasswordInput v-model="next" />
           <small>לפחות {{ MIN_PASSWORD_LENGTH }} תווים</small>
         </label>
         <label class="field">
           <span>אימות סיסמה</span>
-          <input v-model="confirm" type="password" dir="ltr" autocomplete="new-password" required />
+          <NewPasswordInput v-model="confirm" />
         </label>
         <p v-if="error" class="form-error" role="alert">{{ error }}</p>
         <button class="btn primary" type="submit" :disabled="busy">{{ busy ? 'שומרים…' : 'שמירת הסיסמה' }}</button>

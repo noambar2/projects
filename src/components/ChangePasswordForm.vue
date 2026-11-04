@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import NewPasswordInput from '@/components/NewPasswordInput.vue'
 import { changePassword, MIN_PASSWORD_LENGTH, session } from '@/composables/useAuth'
 
 const current = ref('')
@@ -44,12 +45,12 @@ async function submit() {
     </label>
     <label class="field">
       <span>סיסמה חדשה</span>
-      <input v-model="next" type="password" dir="ltr" autocomplete="new-password" required />
+      <NewPasswordInput v-model="next" />
       <small>לפחות {{ MIN_PASSWORD_LENGTH }} תווים</small>
     </label>
     <label class="field">
       <span>אימות סיסמה חדשה</span>
-      <input v-model="confirm" type="password" dir="ltr" autocomplete="new-password" required />
+      <NewPasswordInput v-model="confirm" />
     </label>
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>
     <p v-if="success" class="form-success" role="status">הסיסמה הוחלפה.</p>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import AppDialog from '@/components/AppDialog.vue'
 import AppIcon from '@/components/AppIcon.vue'
 import {
   LIST_STATUSES,
@@ -14,7 +15,8 @@ const props = defineProps<{
   save: (fields: EditableTaskFields, task: Task | null) => Promise<boolean>
 }>()
 
-const dialog = ref<HTMLDialogElement>()
+const dialog = ref<InstanceType<typeof AppDialog>>()
+const titleInput = ref<HTMLInputElement>()
 const editing = ref<Task | null>(null)
 const title = ref('')
 const notes = ref('')
@@ -35,7 +37,9 @@ function open(task: Task | null, defaultStatus: TaskStatus = 'todo') {
   dueDate.value = task?.due_date ?? ''
   subtasks.value = (task?.subtasks ?? []).map((subtask) => ({ ...subtask }))
   error.value = ''
-  dialog.value?.showModal()
+  dialog.value?.open()
+  // A phone's keyboard would cover the sheet, so only mouse users start in the field.
+  if (!task && matchMedia('(pointer: fine)').matches) titleInput.value?.focus()
 }
 
 function addSubtask() {
@@ -75,12 +79,11 @@ defineExpose({ open })
 </script>
 
 <template>
-  <dialog ref="dialog" class="dialog" aria-labelledby="task-dialog-title">
-    <h2 id="task-dialog-title">{{ editing ? 'עריכת משימה' : 'משימה חדשה' }}<span class="dot">.</span></h2>
-    <form class="form" @submit.prevent="submit">
+  <AppDialog ref="dialog" :title="editing ? 'עריכת משימה' : 'משימה חדשה'" :width="560">
+    <form id="task-form" class="form" @submit.prevent="submit">
       <label class="field">
         <span>כותרת</span>
-        <input v-model="title" type="text" required />
+        <input ref="titleInput" v-model="title" type="text" required />
       </label>
       <label class="field">
         <span>הערות</span>
@@ -115,28 +118,16 @@ defineExpose({ open })
       </fieldset>
 
       <p v-if="error" class="form-error" role="alert">{{ error }}</p>
-      <div class="actions">
-        <button class="btn primary" type="submit" :disabled="busy">{{ busy ? 'שומרים…' : 'שמירה' }}</button>
-        <button class="btn" type="button" @click="dialog?.close()">ביטול</button>
-      </div>
     </form>
-  </dialog>
+
+    <template #footer>
+      <button class="btn primary save" type="submit" form="task-form" :disabled="busy">{{ busy ? 'שומרים…' : 'שמירה' }}</button>
+      <button class="btn" type="button" @click="dialog?.close()">ביטול</button>
+    </template>
+  </AppDialog>
 </template>
 
 <style scoped>
-.dialog {
-  width: min(560px, calc(100vw - 32px));
-  max-height: calc(100dvh - 32px);
-  padding: 24px;
-  box-sizing: border-box;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--ink);
-  box-shadow: var(--shadow-hover);
-}
-.dialog::backdrop { background: rgba(18, 39, 54, 0.45); }
-h2 { margin: 0 0 20px; color: var(--navy); font-size: 22px; font-weight: 700; }
 .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .subtasks { display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 0; padding: 0; border: none; }
 legend { margin-bottom: 6px; padding: 0; color: var(--navy); font-size: 15px; font-weight: 500; }
@@ -156,8 +147,7 @@ legend { margin-bottom: 6px; padding: 0; color: var(--navy); font-size: 15px; fo
 .subtask-title:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; border-color: transparent; }
 .subtask .icon-btn { flex: none; }
 .add-subtask { align-self: flex-start; }
-.actions { display: flex; gap: 8px; }
-.actions .primary { flex: 1; }
+.save { flex: 1; }
 
 @media (max-width: 480px) {
   .row { grid-template-columns: minmax(0, 1fr); }
