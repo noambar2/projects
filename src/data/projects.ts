@@ -7,6 +7,13 @@ export interface ProjectLink {
   label?: string
 }
 
+export interface ProjectSection {
+  title: string
+  /** Where the mockup can be opened. Set only on sections with a mockup link. */
+  mockupDevice?: 'mobile' | 'desktop'
+  links: ProjectLink[]
+}
+
 export interface Project {
   title: string
   note?: string
@@ -14,6 +21,8 @@ export interface Project {
   /** Where the mockup can be opened. Set only on projects with a mockup link. */
   mockupDevice?: 'mobile' | 'desktop'
   links: ProjectLink[]
+  /** Parts of the project with links of their own, shown under the project's links. */
+  sections?: ProjectSection[]
 }
 
 const MALSHABIA_FIGMA = 'https://www.figma.com/design/fub6Qx5498BVhspyx26p0x/%D7%9E%D7%9C%D7%A9%D7%B4%D7%91%D7%99%D7%94'
@@ -78,6 +87,15 @@ export const projects: Project[] = [
       { type: 'env', url: 'https://communities.malshab.idf.il', label: 'קהילות prod' },
       { type: 'env', url: 'https://communities.preprod.malshab.idf.il/login', label: 'קהילות preprod' },
     ],
+    sections: [
+      {
+        title: 'צו בצוותא',
+        links: [
+          { type: 'mockup', url: 'https://noambar2.github.io/communities/' },
+          { type: 'git', url: 'https://github.com/noambar2/communities' },
+        ],
+      },
+    ],
   },
   {
     title: 'AI ואפי',
@@ -99,7 +117,9 @@ export const projects: Project[] = [
 
 /** Every project with a mockup, for linking a task to one. */
 export const mockups = projects.flatMap((project) =>
-  project.links
-    .filter((link) => link.type === 'mockup')
-    .map((link) => ({ title: project.title, url: link.url, device: project.mockupDevice })),
+  [project, ...(project.sections ?? [])].flatMap((item) =>
+    item.links
+      .filter((link) => link.type === 'mockup')
+      .map((link) => ({ title: item.title, url: link.url, device: item.mockupDevice })),
+  ),
 )

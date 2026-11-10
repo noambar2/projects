@@ -37,6 +37,24 @@ const DEVICE_LABELS = {
         rel="noopener"
       >{{ link.type === 'env' ? link.label : LINK_LABELS[link.type] }}</a>
     </div>
+    <section v-for="section in project.sections" :key="section.title" class="section">
+      <div class="section-head">
+        <h3>{{ section.title }}</h3>
+        <span v-if="section.mockupDevice" class="chip" :class="section.mockupDevice">
+          {{ DEVICE_LABELS[section.mockupDevice] }}
+        </span>
+      </div>
+      <div class="links">
+        <a
+          v-for="link in section.links"
+          :key="link.url"
+          :class="link.type"
+          :href="link.url"
+          target="_blank"
+          rel="noopener"
+        >{{ link.type === 'env' ? link.label : LINK_LABELS[link.type] }}</a>
+      </div>
+    </section>
   </li>
 </template>
 
@@ -156,14 +174,21 @@ h2 {
 .links .env { background: var(--green-tint); color: var(--green-text); }
 .links .env:hover { border-color: var(--green-text); }
 
+.section { margin-inline: 24px; border-top: 1px solid rgba(18, 39, 54, 0.1); }
+.section .links { padding-inline: 0; padding-top: 12px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 16px; }
+h3 { margin: 0; color: var(--navy); font-size: 17px; font-weight: 700; }
+
 @media (max-width: 720px) {
   .info { padding: 20px 20px 0; }
   .links { padding: 16px 20px 20px; }
+  .section { margin-inline: 20px; }
   h2 { font-size: 22px; }
 }
 @media (max-width: 360px) {
   .info { padding: 16px 16px 0; }
   .links { gap: 6px; padding: 14px 16px 16px; }
+  .section { margin-inline: 16px; }
   .links a { gap: 6px; padding-inline: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
