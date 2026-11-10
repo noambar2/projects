@@ -90,6 +90,7 @@ export const projects: Project[] = [
     sections: [
       {
         title: 'צו בצוותא',
+        mockupDevice: 'desktop',
         links: [
           { type: 'mockup', url: 'https://noambar2.github.io/communities/' },
           { type: 'git', url: 'https://github.com/noambar2/communities' },
