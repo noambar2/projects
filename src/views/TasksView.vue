@@ -44,6 +44,7 @@ const {
 const deleteDialog = ref<InstanceType<typeof DeleteTaskDialog>>()
 const signOutDialog = ref<InstanceType<typeof AppDialog>>()
 const taskDialog = ref<InstanceType<typeof TaskDialog>>()
+const detailsDialog = ref<InstanceType<typeof AppDialog>>()
 const email = computed(() => session.value?.user.email ?? '')
 
 // The board needs a mouse and room for four columns, so phones and tablets get the list.
@@ -89,6 +90,28 @@ function chooseView(id: View) {
 
 const dragging = ref<Task | null>(null)
 
+// The phone's details sheet follows the task by id, so live updates show in it.
+const detailsId = ref<string | null>(null)
+const detailsTask = computed(
+  () => [...Object.values(byStatus.value).flat(), ...olderDone.value].find((task) => task.id === detailsId.value) ?? null,
+)
+
+function openDetails(task: Task) {
+  detailsId.value = task.id
+  detailsDialog.value?.open()
+}
+
+// Editing and deleting happen in their own dialogs, so the sheet steps aside first.
+function editFromDetails(task: Task) {
+  detailsDialog.value?.close()
+  taskDialog.value?.open(task)
+}
+
+function deleteFromDetails(task: Task) {
+  detailsDialog.value?.close()
+  deleteDialog.value?.open(task)
+}
+
 function openNewTask(status?: TaskStatus) {
   taskDialog.value?.open(null, status ?? (view.value === 'backlog' ? 'backlog' : 'todo'))
 }
@@ -119,6 +142,10 @@ function dropTask(status: TaskStatus) {
         <p dir="ltr" class="email">{{ email }}</p>
       </div>
       <div class="account">
+        <RouterLink class="btn links-link" to="/" aria-label="אזור הקישורים" title="אזור הקישורים">
+          <AppIcon name="link" :size="16" />
+          <span class="links-text">אזור הקישורים</span>
+        </RouterLink>
         <RouterLink class="btn icon-btn" to="/settings" aria-label="הגדרות" title="הגדרות">
           <AppIcon name="settings" :size="16" />
         </RouterLink>
@@ -200,12 +227,14 @@ function dropTask(status: TaskStatus) {
             :key="task.id"
             :task="task"
             mode="list"
+            phone-show="order"
             reorderable
             :can-move-up="index > 0"
             :can-move-down="index < group.tasks.length - 1"
             @edit="taskDialog?.open(task)"
             @delete="deleteDialog?.open(task)"
             @move="moveTask(task, $event, group.tasks)"
+            @open="openDetails(task)"
             @status="setStatus(task, $event)"
             @toggle-subtask="toggleSubtask(task, $event)"
           />
@@ -221,6 +250,7 @@ function dropTask(status: TaskStatus) {
           :key="task.id"
           :task="task"
           mode="list"
+          @open="openDetails(task)"
           @edit="taskDialog?.open(task)"
           @delete="deleteDialog?.open(task)"
           @status="setStatus(task, $event)"
@@ -243,6 +273,8 @@ function dropTask(status: TaskStatus) {
             :key="task.id"
             :task="task"
             mode="list"
+            :phone-show="view === 'backlog' ? 'status' : 'summary'"
+            @open="openDetails(task)"
             @edit="taskDialog?.open(task)"
             @delete="deleteDialog?.open(task)"
             @status="setStatus(task, $event)"
@@ -254,6 +286,19 @@ function dropTask(status: TaskStatus) {
 
     <TaskDialog ref="taskDialog" :save="saveTask" />
     <DeleteTaskDialog ref="deleteDialog" :remove="deleteTask" />
+
+    <AppDialog ref="detailsDialog" title="פרטי משימה">
+      <TaskCard
+        v-if="detailsTask"
+        :task="detailsTask"
+        mode="sheet"
+        @edit="editFromDetails(detailsTask)"
+        @delete="deleteFromDetails(detailsTask)"
+        @status="setStatus(detailsTask, $event)"
+        @toggle-subtask="toggleSubtask(detailsTask, $event)"
+      />
+      <p v-else class="empty">המשימה כבר לא קיימת.</p>
+    </AppDialog>
 
     <AppDialog ref="signOutDialog" title="להתנתק?" :width="400">
       <p class="sign-out-text">כדי לחזור למשימות במכשיר הזה צריך יהיה להתחבר שוב.</p>
@@ -293,6 +338,11 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   border-color: rgba(var(--ink-rgb), 0.14);
   border-radius: 8px;
   color: var(--muted);
+}
+.account .links-link { width: auto; padding-inline: 12px; font-size: 14px; text-decoration: none; }
+@media (max-width: 720px) {
+  .account .links-link { width: 32px; padding: 0; }
+  .links-text { display: none; }
 }
 .toolbar > .primary { min-height: 32px; padding-inline: 12px; border-radius: 8px; font-size: 14px; }
 .logout { transform: scaleX(-1); } /* Points the way out in a right-to-left layout. */
@@ -355,12 +405,20 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
   font-weight: 700;
 }
 .empty { margin: 0; color: var(--muted); font-size: 14px; }
-.list { display: flex; flex-direction: column; gap: 12px; }
+/* One framed table per section; the rows draw their own dividers. */
+.list {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(var(--ink-rgb), 0.1);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: 0 1px 3px rgba(var(--ink-rgb), 0.05);
+}
 
-@media (min-width: 901px) and (pointer: fine) {
+@media (min-width: 721px) {
   .sections { gap: 20px; }
   .section-title { margin-bottom: 8px; font-size: 15px; }
-  .list { gap: 6px; }
 }
 
 @media (max-width: 720px) {

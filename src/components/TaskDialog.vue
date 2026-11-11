@@ -133,8 +133,8 @@ defineExpose({ open })
     </form>
 
     <template #footer>
-      <button class="btn primary save" type="submit" form="task-form" :disabled="busy">{{ busy ? 'שומרים…' : 'שמירה' }}</button>
       <button class="btn" type="button" @click="dialog?.close()">ביטול</button>
+      <button class="btn primary save" type="submit" form="task-form" :disabled="busy">{{ busy ? 'שומרים…' : 'שמירה' }}</button>
     </template>
   </AppDialog>
 </template>

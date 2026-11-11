@@ -92,17 +92,15 @@ watch(
 </template>
 
 <style scoped>
-.column { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.column { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .column-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 48px;
-  padding-inline: 14px 6px;
+  min-height: 40px;
+  padding-inline: 4px 0;
   box-sizing: border-box;
-  background: var(--card);
-  border: 1px solid rgba(var(--ink-rgb), 0.08);
-  border-radius: var(--radius);
+  border-bottom: 2px solid var(--status);
 }
 h2 { margin: 0; color: var(--navy); font-size: 15px; font-weight: 700; white-space: nowrap; }
 .add {
@@ -120,7 +118,7 @@ h2 { margin: 0; color: var(--navy); font-size: 15px; font-weight: 700; white-spa
 }
 .add:hover { background: rgba(var(--ink-rgb), 0.06); color: var(--navy); }
 .add:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
-.cards { display: flex; flex: 1; flex-direction: column; gap: 12px; min-height: 120px; }
+.cards { display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 120px; }
 .drop-target .cards {
   outline: 2px dashed var(--blue);
   outline-offset: 4px;

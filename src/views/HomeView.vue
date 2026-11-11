@@ -9,7 +9,7 @@ import { projects } from '@/data/projects'
   <main class="page">
     <nav class="top">
       <RouterLink class="btn tasks-link" to="/tasks">
-        <AppIcon name="check" :size="16" />
+        <AppIcon name="tasks" :size="16" />
         מעבר לאזור המשימות
       </RouterLink>
     </nav>
