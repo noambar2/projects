@@ -287,7 +287,7 @@ function dropTask(status: TaskStatus) {
     <TaskDialog ref="taskDialog" :save="saveTask" />
     <DeleteTaskDialog ref="deleteDialog" :remove="deleteTask" />
 
-    <AppDialog ref="detailsDialog" title="פרטי משימה">
+    <AppDialog ref="detailsDialog" class="details-sheet" title="פרטי משימה">
       <TaskCard
         v-if="detailsTask"
         :task="detailsTask"
@@ -386,6 +386,11 @@ h1 { margin: 0; color: var(--navy); font-size: 32px; font-weight: 700; line-heig
 
 .sign-out-text { margin: 0; font-size: 15px; }
 .sign-out-confirm { flex: 1; }
+
+/* A short task would leave the details sheet as a thin strip, so it opens at least this tall. */
+@media (max-width: 720px) {
+  .details-sheet :deep(.panel) { min-height: 60dvh; }
+}
 
 .notice { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .notice.form-error { color: var(--danger); }

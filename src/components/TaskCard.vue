@@ -133,7 +133,7 @@ const overdue = computed(() => {
 <template>
   <article
     class="card"
-    :class="[`status-${task.status}`, `mode-${mode}`, `phone-${phoneShow ?? 'summary'}`, { done: isDone, flush: !reorderable, swiping }]"
+    :class="[`status-${task.status}`, `mode-${mode}`, mode === 'list' ? `phone-${phoneShow ?? 'summary'}` : '', { done: isDone, flush: !reorderable, swiping }]"
     :style="canSwipe ? { '--reveal': `${reveal}px` } : undefined"
     :data-task-id="task.id"
     :draggable="mode === 'board'"
@@ -159,6 +159,17 @@ const overdue = computed(() => {
         <span v-if="listSubtasks" class="subtask-count" aria-hidden="true">{{ doneCount }}/{{ task.subtasks.length }}</span>
       </div>
       <div class="tools">
+        <a
+          v-if="mode === 'sheet' && task.mockup_url"
+          class="btn tool mockup-tool"
+          :href="task.mockup_url"
+          target="_blank"
+          rel="noopener"
+          aria-label="מעבר למוקאפ"
+          title="מעבר למוקאפ"
+        >
+          <AppIcon name="mockup" :size="16" />
+        </a>
         <button class="btn tool" type="button" :aria-label="`עריכת ${task.title}`" @click="$emit('edit')">
           <AppIcon name="pencil" :size="16" />
         </button>
@@ -554,12 +565,44 @@ h3 { margin: 0; color: var(--navy); font-size: 16px; font-weight: 500; line-heig
   .phone-status .status-select { display: flex; flex: none; }
 }
 
-/* The details sheet: the whole task, with full-size controls. */
-.card.mode-sheet { gap: 16px; padding: 0; border: none; background: transparent; box-shadow: none; }
+/* The details sheet: the title with its buttons, the notes, the subtasks, and last a line
+   with the due date at the start and the status at the end. */
+.card.mode-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+.mode-sheet .head,
+.mode-sheet .notes,
+.mode-sheet .subtasks { grid-column: 1 / -1; }
+.mode-sheet .notes { order: 1; }
+.mode-sheet .subtasks { order: 2; }
+.mode-sheet .dates,
+.mode-sheet .completed { order: 3; grid-column: 1; }
+.mode-sheet .controls { order: 4; grid-column: 2; }
+.mode-sheet.done .dates { display: none; } /* As in the list, the completion date says more. */
+/* The mockup opens from the icon next to edit and delete, even for desktop-only mockups:
+   on the phone it's the person's choice to look. */
+.mode-sheet .controls .mockup-link { display: none; }
+.card.mode-sheet .mockup-tool { color: var(--blue-text); }
 .mode-sheet h3 { font-size: 18px; }
 .mode-sheet .progress-label { margin: 0; }
 .mode-sheet .subtasks ul { margin-top: 8px; }
 .mode-sheet .controls { justify-content: flex-start; }
+/* The status looks as it does on a backlog row: small and without a frame. */
+.card.mode-sheet .status-select {
+  flex: none;
+  min-height: 32px;
+  padding-inline: 8px;
+  border-color: transparent;
+  border-radius: 8px;
+}
+.mode-sheet .status-select select { min-height: 30px; }
 
 /* Board cards share the list's quiet look: a hairline frame, plain-text dates and links,
    and edit and delete floating over the corner of the card being pointed at. */
